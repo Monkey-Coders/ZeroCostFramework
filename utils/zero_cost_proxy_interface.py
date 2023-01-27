@@ -1,32 +1,33 @@
 import torch
+from torch import nn 
 
 class ZeroCostProxyInterface:
     def calculate_proxy(
         self,
-        net: torch.nn.Module,
+        net: nn.Module,
         data_loader: torch.utils.data.DataLoader,
         device: str,
-        loss_function: torch.nn.L1Loss
-        | torch.nn.MSELoss
-        | torch.nn.CrossEntropyLoss
-        | torch.nn.CTCLoss
-        | torch.nn.NLLLoss
-        | torch.nn.PoissonNLLLoss
-        | torch.nn.GaussianNLLLoss
-        | torch.nn.KLDivLoss
-        | torch.nn.BCELoss
-        | torch.nn.BCEWithLogitsLoss
-        | torch.nn.MarginRankingLoss
-        | torch.nn.HingeEmbeddingLoss
-        | torch.nn.MultiLabelMarginLoss
-        | torch.nn.HuberLoss
-        | torch.nn.SmoothL1Loss
-        | torch.nn.SoftMarginLoss
-        | torch.nn.MultiLabelSoftMarginLoss
-        | torch.nn.CosineEmbeddingLoss
-        | torch.nn.MultiMarginLoss
-        | torch.nn.TripletMarginLoss
-        | torch.nn.TripletMarginWithDistanceLoss,
+        loss_function: nn.L1Loss
+        | nn.MSELoss
+        | nn.CrossEntropyLoss
+        | nn.CTCLoss
+        | nn.NLLLoss
+        | nn.PoissonNLLLoss
+        | nn.GaussianNLLLoss
+        | nn.KLDivLoss
+        | nn.BCELoss
+        | nn.BCEWithLogitsLoss
+        | nn.MarginRankingLoss
+        | nn.HingeEmbeddingLoss
+        | nn.MultiLabelMarginLoss
+        | nn.HuberLoss
+        | nn.SmoothL1Loss
+        | nn.SoftMarginLoss
+        | nn.MultiLabelSoftMarginLoss
+        | nn.CosineEmbeddingLoss
+        | nn.MultiMarginLoss
+        | nn.TripletMarginLoss
+        | nn.TripletMarginWithDistanceLoss,
         eval: bool = False,
         train: bool = True,
         single_batch: bool = True,
