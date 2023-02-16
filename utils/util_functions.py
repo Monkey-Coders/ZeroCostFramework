@@ -36,10 +36,9 @@ def initialise_zero_cost_proxy(net, data_loader, device, eval, train, single_bat
     if single_batch:
         process = iter(data_loader)
         batch = next(process)
-        data, labels, video_ids, indices = batch
     
-    data = Variable(data.float().to(device), requires_grad=False) 
-    labels = Variable(labels.long().to(device), requires_grad=False)
+    data = Variable(batch[0].float().to(device), requires_grad=False) 
+    labels = Variable(batch[1].long().to(device), requires_grad=False)
 
     return model, data, labels
 
@@ -63,8 +62,9 @@ def calculate_function_runtime(function, *args, **kwargs):
     start_time = time.time()
     try:
         score = function(*args, **kwargs)
-    except:
-        score = 0
+    except Exception as e:
+        print(e)
+        score = None
     end_time = time.time()
     elapsed_time = end_time - start_time
     return (score, elapsed_time)

@@ -8,6 +8,15 @@ import types
 from ZeroCostFramework.utils.zero_cost_proxy_interface import ZeroCostProxyInterface
 
 class snip(ZeroCostProxyInterface):
+    
+    def snip_forward_conv2d(self, f_self, x):
+            return F.conv2d(x, f_self.weight * f_self.weight_mask, f_self.bias,
+                            f_self.stride, f_self.padding, f_self.dilation, f_self.groups)
+
+    def snip_forward_linear(self, f_self, x):
+            return F.linear(x, f_self.weight * f_self.weight_mask, f_self.bias)
+
+
     def calculate_proxy(self, net, data_loader, device, loss_function, eval = False, train = True, single_batch = True, bn = True) -> float:
         model, data, labels = initialise_zero_cost_proxy(net, data_loader, device, train=train, eval=eval, single_batch=single_batch, bn=bn)
 
@@ -23,7 +32,7 @@ class snip(ZeroCostProxyInterface):
 
         N = data.shape[0]
         
-        outputs, _ = model.forward(data)
+        outputs = model.forward(data)
         loss = loss_function(outputs, labels)
         loss.backward()
 
@@ -36,10 +45,3 @@ class snip(ZeroCostProxyInterface):
         score = get_score(model, snip, "param")
 
         return score
-    
-    def snip_forward_conv2d(self, x):
-            return F.conv2d(x, self.weight * self.weight_mask, self.bias,
-                            self.stride, self.padding, self.dilation, self.groups)
-
-    def snip_forward_linear(self, x):
-            return F.linear(x, self.weight * self.weight_mask, self.bias)

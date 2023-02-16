@@ -16,16 +16,16 @@ class jacov(ZeroCostProxyInterface):
             jc = np.nan
         return jc
     
-    def get_batch_jacobian(net, x, target):
+    def get_batch_jacobian(self, net, x, target):
         net.zero_grad()
         x.requires_grad = True
-        out, features = net(x)
+        out = net(x)
         out.backward(torch.ones_like(out))
         jacob = x.grad.detach()
         return jacob, target.detach()
 
 
-    def eval_score(jacob, labels=None):
+    def eval_score(self, jacob, labels=None):
         corrs = np.corrcoef(jacob)
         v, _ = np.linalg.eig(corrs)
         k = 1e-5

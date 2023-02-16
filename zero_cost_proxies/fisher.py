@@ -7,6 +7,19 @@ from ZeroCostFramework.utils.util_functions import initialise_zero_cost_proxy, g
 from ZeroCostFramework.utils.zero_cost_proxy_interface import ZeroCostProxyInterface
 
 class fisher(ZeroCostProxyInterface):
+
+    def fisher_forward_conv2d(self, f_self, x):
+        x = F.conv2d(x, f_self.weight, f_self.bias, f_self.stride, f_self.padding, f_self.dilation, f_self.groups)
+
+        f_self.act = f_self.dummy(x)
+        return f_self.act
+
+    def fisher_forward_linear(self, f_self, x):
+        x = F.linear(x, f_self.weight, f_self.bias)
+
+        f_self.act = f_self.dummy(x)
+        return f_self.act
+
     def calculate_proxy(self, net, data_loader, device, loss_function, eval = False, train = True, single_batch = True, bn = True) -> float:
         model, data, labels = initialise_zero_cost_proxy(net, data_loader, device, train=train, eval=eval, single_batch=single_batch, bn=bn)
         mode = "channel"
@@ -43,7 +56,7 @@ class fisher(ZeroCostProxyInterface):
                 layer.dummy.register_backward_hook(hook_factory(layer))
 
         
-        outputs,_ = model(data)
+        outputs = model(data)
         loss = loss_function(outputs, labels)
         loss.backward()
 
@@ -59,15 +72,3 @@ class fisher(ZeroCostProxyInterface):
         grads_abs = reshape_elements(grads_abs_ch, shapes, device)
         score = sum_arr(grads_abs)
         return score
-    
-    def fisher_forward_conv2d(self, x):
-        x = F.conv2d(x, self.weight, self.bias, self.stride, self.padding, self.dilation, self.groups)
-
-        self.act = self.dummy(x)
-        return self.act
-
-    def fisher_forward_linear(self, x):
-        x = F.linear(x, self.weight, self.bias)
-
-        self.act = self.dummy(x)
-        return self.act

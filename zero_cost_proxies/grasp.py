@@ -15,13 +15,13 @@ class grasp(ZeroCostProxyInterface):
                 layer.weight.requires_grad_(True)
                 weights.append(layer.weight)
         #forward/grad pass #1
-        outputs, _ = model.forward(data)
+        outputs = model.forward(data)
         loss = loss_function(outputs, labels)
         grad_w_p = autograd.grad(loss, weights, allow_unused=True)
         grad_w = list(grad_w_p)
         
         # forward/grad pass #2
-        outputs, _ = model.forward(data)
+        outputs = model.forward(data)
         loss = loss_function(outputs, labels)
         grad_f = autograd.grad(loss, weights, create_graph=True, allow_unused=True)
         # accumulate gradients computed in previous step and call backwards

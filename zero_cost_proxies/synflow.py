@@ -28,7 +28,7 @@ class synflow(ZeroCostProxyInterface):
         input_dim = list(data[0,:].shape)
 
         inputs = torch.ones([1] + input_dim).double().to(device)
-        outputs,_ = model.forward(inputs)
+        outputs = model.forward(inputs)
         torch.sum(outputs).backward()
 
         def synflow(layer):
