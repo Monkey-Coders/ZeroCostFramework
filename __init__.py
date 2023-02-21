@@ -6,3 +6,8 @@ from .zero_cost_proxies.jacov import jacov
 from .zero_cost_proxies.params import params
 from .zero_cost_proxies.snip import snip
 from .zero_cost_proxies.synflow import synflow
+from .zero_cost_proxies.epe_nas import epe_nas
+from .zero_cost_proxies.l2_norm import l2_norm
+from .zero_cost_proxies.nwot import nwot
+from .zero_cost_proxies.plain import plain
+from .zero_cost_proxies.zen import zen
