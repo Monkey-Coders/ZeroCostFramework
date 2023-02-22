@@ -60,11 +60,15 @@ def reshape_elements(elements, shapes, device):
 def calculate_function_runtime(function, *args, **kwargs):
     import time
     start_time = time.time()
-    try:
+    DEBUG = True
+    if DEBUG:
         score = function(*args, **kwargs)
-    except Exception as e:
-        print(e)
-        score = None
+    else:
+        try:
+            score = function(*args, **kwargs)
+        except Exception as e:
+            print(e)
+            score = None
     end_time = time.time()
     elapsed_time = end_time - start_time
     return (score, elapsed_time)
