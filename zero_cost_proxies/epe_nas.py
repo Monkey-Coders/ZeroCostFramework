@@ -8,8 +8,8 @@ class epe_nas(ZeroCostProxyInterface):
     
         model, data, labels = initialise_zero_cost_proxy(net, data_loader, device, train=train, eval=eval, single_batch=single_batch, bn=bn)
         jacobs = []
-        labels = []
-
+        jac_labels = []
+        
         try:
             jacobs_batch, target, n_classes = self.get_batch_jacobian(model, data, labels, None, None)
             jacobs.append(jacobs_batch.reshape(jacobs_batch.size(0), -1).cpu().numpy())
@@ -17,12 +17,11 @@ class epe_nas(ZeroCostProxyInterface):
             if len(target.shape) == 2: # Hack to handle TNB101 classification tasks
                 target = torch.argmax(target, dim=1)
 
-            labels.append(target.cpu().numpy())
+            jac_labels.append(target.cpu().numpy())
 
             jacobs = np.concatenate(jacobs, axis=0)
 
-            s = self.eval_score_perclass(jacobs, labels, n_classes)
-
+            s = self.eval_score_perclass(jacobs, jac_labels, n_classes)
         except Exception as e:
             print(e)
             s = np.nan
@@ -30,7 +29,7 @@ class epe_nas(ZeroCostProxyInterface):
         return s
     
     
-    def get_batch_jacobian(net, x, target, to, device, args=None):
+    def get_batch_jacobian(self, net, x, target, to, device, args=None):
         net.zero_grad()
         x.requires_grad_(True)
         y = net(x)
@@ -38,7 +37,7 @@ class epe_nas(ZeroCostProxyInterface):
         jacob = x.grad.detach()
         return jacob, target.detach(), y.shape[-1]
 
-    def eval_score_perclass(jacob, labels=None, n_classes=10):
+    def eval_score_perclass(self, jacob, labels=None, n_classes=10):
         k = 1e-5
         per_class={}
         for i, label in enumerate(labels[0]):

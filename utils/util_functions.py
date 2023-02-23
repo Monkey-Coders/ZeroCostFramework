@@ -2,16 +2,7 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
-def get_layer_metric_array(net, metric, mode): 
-    metric_array = []
 
-    for layer in net.modules():
-        if mode=='channel' and hasattr(layer,'dont_ch_prune'):
-            continue
-        if isinstance(layer, nn.Conv2d) or isinstance(layer, nn.Linear):
-            metric_array.append(metric(layer))
-    
-    return metric_array
 
 def sum_arr(arr):
     sum = 0.
@@ -19,10 +10,8 @@ def sum_arr(arr):
         sum += torch.sum(arr[i])
     return sum.item()
 
-def get_score(net, metric, mode, is_jacob_cov = False):
+def get_score(net, metric, mode):
     metric_array = get_layer_metric_array(net, metric, mode)
-    if is_jacob_cov:
-        return metric_array
     return sum_arr(metric_array)
 
 def initialise_zero_cost_proxy(net, data_loader, device, eval, train, single_batch, bn):
@@ -82,4 +71,4 @@ def get_layer_metric_array(net, metric, mode):
         if isinstance(layer, nn.Conv2d) or isinstance(layer, nn.Linear):
             metric_array.append(metric(layer))
 
-    return 
+    return metric_array

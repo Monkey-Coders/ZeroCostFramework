@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from ZeroCostFramework.utils.util_functions import initialise_zero_cost_proxy, get_score
+from ZeroCostFramework.utils.util_functions import initialise_zero_cost_proxy
 from ZeroCostFramework.utils.zero_cost_proxy_interface import ZeroCostProxyInterface
 
 
