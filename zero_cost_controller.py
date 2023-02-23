@@ -1,5 +1,5 @@
 import os
-
+from tqdm import tqdm
 from ZeroCostFramework.utils.util_functions import calculate_function_runtime
 
 def files_filter(f):
@@ -22,18 +22,14 @@ def calculate_zc_proxy_scores(net, data_loader, device, loss_function, save_path
 
     scores = {}
 
-    for proxy_name in proxies:
+    for proxy_name in tqdm(proxies):
         name = f"{folder_name}.{proxy_name}"
         proxy = import_class(name)
-        print(f"{proxy_name} Starting...")
-        score, elapsed_time = calculate_function_runtime(proxy().calculate_proxy, net, data_loader, device, loss_function)
-        print(f"{proxy_name} Done...")
-        
+        score, elapsed_time = calculate_function_runtime(proxy().calculate_proxy, net, data_loader, device, loss_function)    
         scores[proxy_name] = {
             "score": str(score),
             "time": str(elapsed_time)
             }
         
-        print('Execution time:', elapsed_time, 'seconds for proxy:', proxy_name, 'with score:', score)
     
     return scores
