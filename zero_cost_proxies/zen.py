@@ -17,7 +17,6 @@ class zen(ZeroCostProxyInterface):
                 input = torch.randn(size=list(data.shape), device=device, dtype=dtype)
                 input2 = torch.randn(size=list(data.shape), device=device, dtype=dtype)
                 mixup_input = input + mixup_gamma * input2
-
                 output = model.forward_before_global_avg_pool(input)
                 mixup_output = model.forward_before_global_avg_pool(mixup_input)
 
@@ -39,7 +38,7 @@ class zen(ZeroCostProxyInterface):
 
         return avg_nas_score
     
-    def network_weight_gaussian_init(net: nn.Module):
+    def network_weight_gaussian_init(self, net: nn.Module):
         with torch.no_grad():
             for m in net.modules():
                 if isinstance(m, nn.Conv2d):
@@ -57,5 +56,3 @@ class zen(ZeroCostProxyInterface):
                         nn.init.zeros_(m.bias)
                 else:
                     continue
-
-        return 
