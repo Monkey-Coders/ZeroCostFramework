@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
-def get_layer_metric_array(net, metric, mode): 
+def get_layer_metric_array(net, metric, mode):
     metric_array = []
 
     for layer in net.modules():
@@ -72,14 +72,3 @@ def calculate_function_runtime(function, *args, **kwargs):
     end_time = time.time()
     elapsed_time = end_time - start_time
     return (score, elapsed_time)
-
-def get_layer_metric_array(net, metric, mode):
-    metric_array = []
-
-    for layer in net.modules():
-        if mode == "channel" and hasattr(layer, "dont_ch_prune"):
-            continue
-        if isinstance(layer, nn.Conv2d) or isinstance(layer, nn.Linear):
-            metric_array.append(metric(layer))
-
-    return 
