@@ -2,15 +2,10 @@ import json
 from itertools import combinations
 import os
 
+from ZeroCostFramework.utils.util_functions import get_proxies
+
+
 path = "architectures"
-
-
-def files_filter(f):
-    if f == '__init__.py':
-        return False
-    if f.endswith('.py'):
-        return True
-    return False
 
 
 def init(names):
@@ -18,7 +13,7 @@ def init(names):
         results = json.load(file)
         
     metrics = {}
-    auc = []
+    acc = []
     
     for key in results:
         value = results[key]
@@ -29,10 +24,10 @@ def init(names):
                 metrics[name] = []
             metrics[name].append(float(value["zero_cost_scores"][name]["score"]))
         if "val_acc" in value:
-            auc.append(float(value["val_acc"]))
+            acc.append(float(value["val_acc"]))
         else:
-            auc.append(0)
-    return (auc, metrics)
+            acc.append(0)
+    return (acc, metrics)
 
 def vote(mets, gt):
     numpos = 0
@@ -45,14 +40,14 @@ def vote(mets, gt):
     return sign*gt
 
 
-def calc(auc, metrics, comb):
-    num_pts = len(auc)
+def calc(acc, metrics, comb):
+    num_pts = len(acc)
     tot=0
     right=0
     for i in range(num_pts):
         for j in range(num_pts):
             if i!=j:
-                diff = auc[i] - auc[j]
+                diff = acc[i] - acc[j]
                 if diff == 0:
                     continue
                 diffsyn = []
@@ -72,15 +67,15 @@ def get_all_combinations(names):
 
 if __name__ == "__main__":
     print("STARTING...")
-    proxies = [f.replace(".py", "") for f in os.listdir(f"{os.path.dirname(__file__)}/zero_cost_proxies") if files_filter(f)]
+    proxies = get_proxies()
     print("INITIALIZING...")
-    auc, metrics = init(proxies)
+    acc, metrics = init(proxies)
     comb = get_all_combinations(proxies)
     
     D = {}
     print("CALCULATING...")
     for c in comb:
-        a, votes = calc(auc, metrics, c)
+        a, votes = calc(acc, metrics, c)
         D[str(a)] = votes
     print("SORTING...")
     D = dict(sorted(D.items(), key=lambda item: item[1], reverse=True))

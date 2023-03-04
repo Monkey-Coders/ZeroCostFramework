@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -72,3 +73,15 @@ def get_layer_metric_array(net, metric, mode):
             metric_array.append(metric(layer))
 
     return metric_array
+
+
+def get_proxies(exclude=[]):
+    def files_filter(f):
+        if f == '__init__.py':
+            return False
+        if f[:-3] in exclude:
+            return False
+        if f.endswith('.py'):
+            return True
+        return False
+    return [f.replace(".py", "") for f in os.listdir(f"{os.path.dirname(__file__)}/../zero_cost_proxies") if files_filter(f)]
