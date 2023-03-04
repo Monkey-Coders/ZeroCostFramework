@@ -10,10 +10,18 @@ class nwot(ZeroCostProxyInterface):
             if isinstance(inp, tuple):
                 inp = inp[0]
             inp = inp.view(inp.size(0), -1)
-            x = (inp > 0).float()
-            K = x @ x.t()
-            K2 = (1.-x) @ (1.-x.t())
-            model.K = model.K + K.cpu().numpy() + K2.cpu().numpy()
+            active_zone = (inp > 0).float()
+            inactive_zone = 1. - active_zone
+            
+            K_active = torch.matmul(active_zone, active_zone.transpose(1, 0))
+            K_inactive = torch.matmul(inactive_zone, inactive_zone.transpose(1, 0))
+            model.K += K_active.cpu().numpy() + K_inactive.cpu().numpy()
+            
+            # Add epsilon to the diagonal
+            epsilon = 1e-6
+            diag = torch.eye(model.K.shape[0]) * epsilon
+            model.K += diag.cpu().numpy()
+            
         
         if len(data.size()) == 5:
             N, _C, _T, _V, M = data.size()

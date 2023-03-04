@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 from ZeroCostFramework.utils.util_functions import get_score, initialise_zero_cost_proxy
 from ZeroCostFramework.utils.zero_cost_proxy_interface import ZeroCostProxyInterface
@@ -17,6 +16,6 @@ class plain(ZeroCostProxyInterface):
                 return layer.weight.grad * layer.weight
             else:
                 return torch.zeros_like(layer.weight)
-
-        score = get_score(net, plain, "param")
+            
+        score = get_score(model, plain, "param")
         return score
