@@ -7,22 +7,29 @@ class nwot(ZeroCostProxyInterface):
     def calculate_proxy(self, net, data_loader, device, loss_function, eval = False, train = True, single_batch = True, bn = True) -> float:
         model, data, labels = initialise_zero_cost_proxy(net, data_loader, device, train=train, eval=eval, single_batch=single_batch, bn=bn)
         def counting_forward_hook(module, inp, out):
-            if isinstance(inp, tuple):
-                inp = inp[0]
-            inp = inp.view(inp.size(0), -1)
-            active_zone = (inp > 0).float()
-            inactive_zone = 1. - active_zone
+            try:
+                if not module.visited_backwards:
+                    return
+                if isinstance(inp, tuple):
+                    inp = inp[0]
+                inp = inp.view(inp.size(0), -1)
+                active_zone = (inp > 0).float()
+                inactive_zone = 1. - active_zone
+                
+                K_active = torch.matmul(active_zone, active_zone.transpose(1, 0))
+                K_inactive = torch.matmul(inactive_zone, inactive_zone.transpose(1, 0))
+                model.K += K_active.cpu().numpy() + K_inactive.cpu().numpy()
+                
+                # Add epsilon to the diagonal
+                epsilon = 1e-6
+                diag = torch.eye(model.K.shape[0]) * epsilon
+                model.K += diag.cpu().numpy()
+            except:
+                pass
             
-            K_active = torch.matmul(active_zone, active_zone.transpose(1, 0))
-            K_inactive = torch.matmul(inactive_zone, inactive_zone.transpose(1, 0))
-            model.K += K_active.cpu().numpy() + K_inactive.cpu().numpy()
-            
-            # Add epsilon to the diagonal
-            epsilon = 1e-6
-            diag = torch.eye(model.K.shape[0]) * epsilon
-            model.K += diag.cpu().numpy()
-            
-        
+        def counting_backward_hook(module, inp, out):
+            module.visited_backwards = True
+
         if len(data.size()) == 5:
             N, _C, _T, _V, M = data.size()
         else:
@@ -36,6 +43,7 @@ class nwot(ZeroCostProxyInterface):
             module_type = str(type(module))
             if ('ReLU' in module_type) and ('naslib' not in module_type):
                 module.register_forward_hook(counting_forward_hook)
+                module.register_backward_hook(counting_backward_hook)
 
         x = torch.clone(data)
         model(x)
