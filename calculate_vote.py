@@ -2,10 +2,10 @@ import json
 from itertools import combinations
 import os
 
-from ZeroCostFramework.utils.util_functions import get_proxies
+from utils.util_functions import get_proxies
 
 
-path = "architectures"
+path = "experiment"
 
 
 def init(names):

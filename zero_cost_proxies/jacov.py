@@ -12,7 +12,6 @@ class jacov(ZeroCostProxyInterface):
             jacobs = jacobs.reshape(jacobs.size(0), -1).cpu().numpy()
             jc = self.eval_score(jacobs, labels)
         except Exception as e:
-            print(e)
             jc = np.nan
         return jc
     

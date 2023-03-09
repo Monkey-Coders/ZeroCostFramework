@@ -32,8 +32,8 @@ def calculate_zc_proxy_scores(net, data_loader, device, loss_function, save_path
         try:
             score, elapsed_time = calculate_function_runtime(proxy().calculate_proxy, net, data_loader, device, loss_function)    
             scores[proxy_name] = {
-                "score": str(score),
-                "time": str(elapsed_time)
+                "score": score,
+                "time": elapsed_time
                 }
         except Exception as e:
             print(f"Error: {e}")
