@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from tqdm import tqdm
 from ZeroCostFramework.utils.util_functions import get_proxies, calculate_function_runtime
 import torch
@@ -27,7 +28,7 @@ def calculate_zc_proxy_scores(net, data_loader, device, loss_function, save_path
         gc.collect()
         torch.cuda.empty_cache()
         net = net.cpu()
-        torch.cuda.empty_cache()
+        torch.cuda.empty_cache() 
         net = net.to(device)
         try:
             score, elapsed_time = calculate_function_runtime(proxy().calculate_proxy, net, data_loader, device, loss_function)    
@@ -36,6 +37,10 @@ def calculate_zc_proxy_scores(net, data_loader, device, loss_function, save_path
                 "time": elapsed_time
                 }
         except Exception as e:
+            scores[proxy_name] = {
+                "score": np.nan,
+                "time": np.nan
+                }
             print(f"Error: {e}")
 
 

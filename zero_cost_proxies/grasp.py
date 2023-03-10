@@ -20,7 +20,7 @@ class grasp(ZeroCostProxyInterface):
         grad_w_p = autograd.grad(loss, weights, allow_unused=True)
         grad_w = list(grad_w_p)
         
-        # forward/grad pass #2
+        # forward/grad pass #2 w
         outputs = model.forward(data)
         loss = loss_function(outputs, labels)
         grad_f = autograd.grad(loss, weights, create_graph=True, allow_unused=True)
