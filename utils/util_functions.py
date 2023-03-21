@@ -2,6 +2,8 @@ import os
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
+import numpy as np
+from datetime import date, datetime, timedelta
 
 
 
@@ -85,3 +87,20 @@ def get_proxies(exclude=[]):
             return True
         return False
     return [f.replace(".py", "") for f in os.listdir(f"{os.path.dirname(__file__)}/../zero_cost_proxies") if files_filter(f)]
+
+def np_json_parse(obj):
+    if isinstance(obj, np.bool_):
+            return bool(obj)
+    if isinstance(obj, (np.floating, np.complexfloating)):
+        return float(obj)
+    if isinstance(obj, np.integer):
+        return int(obj)
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, np.string_):
+        return str(obj)
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    if isinstance(obj, timedelta):
+        return str(obj)
+    return obj
