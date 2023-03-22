@@ -49,7 +49,7 @@ class epe_nas(ZeroCostProxyInterface):
         for c in per_class.keys():
             s = 0
             try:
-                corrs = np.array(np.corrcoef(per_class[c]))
+                corrs = np.array(np.ma.corrcoef(per_class[c]))
 
                 s = np.sum(np.log(abs(corrs)+k))#/len(corrs)
                 if n_classes > 100:
