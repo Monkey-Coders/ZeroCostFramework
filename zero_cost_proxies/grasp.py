@@ -6,6 +6,7 @@ from ZeroCostFramework.utils.zero_cost_proxy_interface import ZeroCostProxyInter
 
 class grasp(ZeroCostProxyInterface):
     def calculate_proxy(self, net, data_loader, device, loss_function, eval = False, train = True, single_batch = True, bn = True) -> float:
+        
         model, data, labels = initialise_zero_cost_proxy(net, data_loader, device, train=train, eval=eval, single_batch=single_batch, bn=bn)
         
         # get all applicable weights

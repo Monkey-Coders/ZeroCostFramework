@@ -17,7 +17,7 @@ def calculate_zc_proxy_scores(net, data_loader, device, loss_function, save_path
     folder_name = os.path.dirname(__file__).split('/')[-1]
 
     scores = {}
-    overide = []
+    overide = ["grasp"]
 
     for proxy_name in tqdm(proxies):
         if len(overide):

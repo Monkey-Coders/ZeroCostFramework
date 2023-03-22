@@ -32,6 +32,8 @@ def initialise_zero_cost_proxy(net, data_loader, device, eval, train, single_bat
     data = Variable(batch[0].float().to(device), requires_grad=False) 
     labels = Variable(batch[1].long().to(device), requires_grad=False)
 
+    torch.cuda.empty_cache()
+    
     return model, data, labels
 
 def reshape_elements(elements, shapes, device):
