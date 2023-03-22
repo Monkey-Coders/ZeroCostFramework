@@ -11,3 +11,4 @@ from .zero_cost_proxies.plain import plain
 from .zero_cost_proxies.snip import snip
 from .zero_cost_proxies.synflow import synflow
 from .zero_cost_proxies.zen import zen
+from .zero_cost_proxies.grad_sign import grad_sign
