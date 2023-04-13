@@ -71,7 +71,7 @@ class fisher(ZeroCostProxyInterface):
 
                     model.zero_grad()
                     outputs = model.forward(data[st:en])
-                    loss = loss_fn(outputs, labels[st:en])
+                    loss = loss_function(outputs, labels[st:en])
                     loss.backward()
 
                 

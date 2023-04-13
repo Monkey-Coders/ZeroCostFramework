@@ -22,7 +22,7 @@ class plain(ZeroCostProxyInterface):
                     en = (sp + 1) * N // split_data
 
                     outputs = model.forward(data[st:en])
-                    loss = loss_fn(outputs, labels[st:en])
+                    loss = loss_function(outputs, labels[st:en])
                     loss.backward()
                 score = get_score(model, self.plain_func, "param")
                 return score

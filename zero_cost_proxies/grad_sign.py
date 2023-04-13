@@ -16,13 +16,13 @@ def get_flattened_metric(net, metric):
     return flattened_grad
 
 
-def get_grad_conflict(net, inputs, targets, loss_fn=F.cross_entropy):
+def get_grad_conflict(net, inputs, targets, loss_function=F.cross_entropy):
     N = inputs.shape[0]
     batch_grad = []
     for i in range(N):
         net.zero_grad()
         outputs = net.forward(inputs[[i]])
-        loss = loss_fn(outputs, targets[[i]])
+        loss = loss_function(outputs, targets[[i]])
         loss.backward()
         flattened_grad = get_flattened_metric(net, lambda
             l: l.weight.grad.data.cpu().numpy() if l.weight.grad is not None else torch.zeros_like(l.weight).cpu().numpy())
