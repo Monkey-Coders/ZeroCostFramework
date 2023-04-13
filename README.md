@@ -1,16 +1,16 @@
 # Zero Cost Proxy
 
 ## Implemented
-- [?] epe-nas
+- [x] epe-nas
 - [x] fisher
 - [x] flops
 - [x] grad-norm
 - [x] grasp
-- [?] l2-norm
+- [x] l2-norm
 - [x] jacov
-- [?] nwot
+- [x] nwot
 - [x] params
-- [?] plain
+- [x] plain
 - [x] snip
 - [x] synflow
-- [?] zen-score
+- [x] zen-score
