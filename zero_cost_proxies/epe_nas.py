@@ -23,11 +23,9 @@ class epe_nas(ZeroCostProxyInterface):
 
             s = self.eval_score_perclass(jacobs, jac_labels, n_classes)
         except Exception as e:
-            print(e)
+            print(f"Error in calculating epe_nas: {e}")
             s = np.nan
-
         return s
-    
     
     def get_batch_jacobian(self, net, x, target, to, device, args=None):
         net.zero_grad()

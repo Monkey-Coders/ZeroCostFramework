@@ -1,12 +1,16 @@
 import json
 from itertools import combinations
 import os
-
+from tqdm import tqdm
 from utils.util_functions import get_proxies
 
 
 path = "experiment"
 
+epochs = ["zero_cost_scores"]
+
+for i in range(10):
+    epochs.append(f"zero_cost_scores_{i}")
 
 def init(names):
     with open(f"{path}/generated_architectures.json") as file:
@@ -15,18 +19,20 @@ def init(names):
     metrics = {}
     acc = []
     
-    for key in results:
-        value = results[key]
-        if "zero_cost_scores" not in value:
+    for key, value in results.items():
+        if not all(format in value for format in epochs):
             continue
-        for name in names:
-            if name not in metrics:
-                metrics[name] = []
-            metrics[name].append(float(value["zero_cost_scores"][name]["score"]))
-        if "val_acc" in value:
-            acc.append(float(value["val_acc"]))
-        else:
-            acc.append(0)
+        if "val_acc" not in value:
+            continue
+        for e_n in names:
+            if e_n not in metrics:
+                metrics[e_n] = []
+            score = value[e_n.split(".")[0]][e_n.split(".")[1]]["score"]
+            if score == "Nan":
+                metrics[e_n].append(float("nan"))
+            else:
+                metrics[e_n].append(score)
+        acc.append(value["val_acc"])
     return (acc, metrics)
 
 def vote(mets, gt):
@@ -60,8 +66,8 @@ def calc(acc, metrics, comb):
     return (comb, votes)
     
 def get_all_combinations(names):
-    list_combinations = list()
-    for n in range(2, len(names) + 1):
+    list_combinations = []
+    for n in range(2, 4):
         list_combinations += list(combinations(names, n))
     return list_combinations
 
@@ -69,12 +75,16 @@ if __name__ == "__main__":
     print("STARTING...")
     proxies = get_proxies()
     print("INITIALIZING...")
-    acc, metrics = init(proxies)
-    comb = get_all_combinations(proxies)
+    names = []
+    for name in proxies:
+        for epoch in epochs:
+            names.append(f"{epoch}.{name}")
+    acc, metrics = init(names)
+    comb = get_all_combinations(names)
     
     D = {}
     print("CALCULATING...")
-    for c in comb:
+    for c in tqdm(comb):
         a, votes = calc(acc, metrics, c)
         D[str(a)] = votes
     print("SORTING...")
