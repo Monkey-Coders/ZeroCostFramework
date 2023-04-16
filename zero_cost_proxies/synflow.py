@@ -40,4 +40,11 @@ class synflow(ZeroCostProxyInterface):
         nonlinearize(net, signs)
         score = get_score(model, synflow, "param")
 
+        del model
+        model = None
+        del data
+        data = None
+        del labels
+        labels = None
+        torch.cuda.empty_cache()
         return score

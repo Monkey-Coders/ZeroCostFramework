@@ -38,4 +38,11 @@ class grad_sign(ZeroCostProxyInterface):
     def calculate_proxy(self, net, data_loader, device, loss_function, eval = False, train = True,  single_batch = True, bn = False) -> float:
         model, data, labels = initialise_zero_cost_proxy(net, data_loader, device, train=train, eval=eval,single_batch=single_batch, bn=bn)
         score = get_grad_conflict(model, data, labels, loss_function)
+        del model
+        model = None
+        del data
+        data = None
+        del labels
+        labels = None
+        torch.cuda.empty_cache()
         return score

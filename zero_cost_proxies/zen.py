@@ -36,6 +36,14 @@ class zen(ZeroCostProxyInterface):
 
         avg_nas_score = float(np.mean(nas_score_list))
 
+        del model
+        model = None
+        del data
+        data = None
+        del labels
+        labels = None
+        torch.cuda.empty_cache()
+        
         return avg_nas_score
     
     def network_weight_gaussian_init(self, net: nn.Module):

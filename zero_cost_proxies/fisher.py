@@ -80,6 +80,13 @@ class fisher(ZeroCostProxyInterface):
                 shapes = get_layer_metric_array(model, lambda x : x.weight.shape[1:], mode)
                 grads_abs = reshape_elements(grads_abs_ch, shapes, device)
                 score = sum_arr(grads_abs)
+                del model
+                model = None
+                del data
+                data = None
+                del labels
+                labels = None
+                torch.cuda.empty_cache()
                 return score
 
             except RuntimeError as e:

@@ -13,6 +13,13 @@ class jacov(ZeroCostProxyInterface):
             jc = self.eval_score(jacobs, labels)
         except Exception as e:
             jc = np.nan
+        del model
+        model = None
+        del data
+        data = None
+        del labels
+        labels = None
+        torch.cuda.empty_cache()
         return jc
     
     def get_batch_jacobian(self, net, x, target):

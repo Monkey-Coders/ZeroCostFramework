@@ -40,5 +40,11 @@ class nwot(ZeroCostProxyInterface):
         model.K += diag.cpu().numpy()
         
         s, jc = np.linalg.slogdet(model.K)
-
+        del model
+        model = None
+        del data
+        data = None
+        del labels
+        labels = None
+        torch.cuda.empty_cache()
         return jc

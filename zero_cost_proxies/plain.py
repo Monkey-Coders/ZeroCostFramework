@@ -25,6 +25,13 @@ class plain(ZeroCostProxyInterface):
                     loss = loss_function(outputs, labels[st:en])
                     loss.backward()
                 score = get_score(model, self.plain_func, "param")
+                del model
+                model = None
+                del data
+                data = None
+                del labels
+                labels = None
+                torch.cuda.empty_cache()
                 return score
             except RuntimeError as e:
                 if "out of memory" in str(e):

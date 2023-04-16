@@ -25,6 +25,13 @@ class epe_nas(ZeroCostProxyInterface):
         except Exception as e:
             print(f"Error in calculating epe_nas: {e}")
             s = np.nan
+        del model
+        model = None
+        del data
+        data = None
+        del labels
+        labels = None
+        torch.cuda.empty_cache()
         return s
     
     def get_batch_jacobian(self, net, x, target, to, device, args=None):

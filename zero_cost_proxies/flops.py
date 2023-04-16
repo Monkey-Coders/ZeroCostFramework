@@ -13,4 +13,11 @@ class flops(ZeroCostProxyInterface):
         # macs = profile_macs(model, dummy_data) // 2
         macs, _params = profile(model, inputs=(dummy_data, ))
         num_flops = int(macs * 2)
+        del model
+        model = None
+        del data
+        data = None
+        del _labels
+        _labels = None
+        torch.cuda.empty_cache()
         return num_flops

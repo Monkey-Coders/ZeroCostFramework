@@ -63,6 +63,13 @@ class grasp(ZeroCostProxyInterface):
                     z.backward()
                 
                 score = get_score(model, self.grasp_func, "param")
+                del model
+                model = None
+                del data
+                data = None
+                del labels
+                labels = None
+                torch.cuda.empty_cache()
                 return score
             except RuntimeError as e:
                 if "out of memory" in str(e):

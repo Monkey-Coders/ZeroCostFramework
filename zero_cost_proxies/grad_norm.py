@@ -19,6 +19,13 @@ class grad_norm(ZeroCostProxyInterface):
                     loss.backward()
 
                     score = get_score(model, lambda l: l.weight.grad.norm() if l.weight.grad is not None else torch.zeros_like(l.weight), mode='param')
+                    del model
+                    model = None
+                    del data
+                    data = None
+                    del labels
+                    labels = None
+                    torch.cuda.empty_cache()
                     return score
             except RuntimeError as e:
                 if "out of memory" in str(e):
