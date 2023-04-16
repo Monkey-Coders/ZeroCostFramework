@@ -12,12 +12,11 @@ def import_class(name):
         mod = getattr(mod, comp)
     return mod
 
-def calculate_zc_proxy_scores(net, data_loader, device, loss_function, save_path):
+def calculate_zc_proxy_scores(net, data_loader, device, loss_function, overide = []):
     proxies = get_proxies()
     folder_name = os.path.dirname(__file__).split('/')[-1]
 
     scores = {}
-    overide = []
 
     for proxy_name in tqdm(proxies):
         if len(overide):
@@ -43,7 +42,4 @@ def calculate_zc_proxy_scores(net, data_loader, device, loss_function, save_path
                 }
             print(f"Error: {e}")
 
-
-        
-    
     return scores
