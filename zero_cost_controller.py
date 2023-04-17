@@ -22,6 +22,7 @@ def calculate_zc_proxy_scores(net, data_loader, device, loss_function, overide =
         if len(overide):
             if proxy_name not in overide:
                 continue
+        print(f"Calculating {proxy_name}...")
         name = f"{folder_name}.{proxy_name}"
         proxy = import_class(name)
         gc.collect()
