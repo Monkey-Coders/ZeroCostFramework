@@ -9,8 +9,8 @@ path = "experiment"
 
 epochs = ["zero_cost_scores"]
 
-for i in range(10):
-    epochs.append(f"zero_cost_scores_{i}")
+# for i in range(10):
+#     epochs.append(f"zero_cost_scores_{i}")
 
 def init(names):
     with open(f"{path}/generated_architectures.json") as file:
@@ -25,6 +25,8 @@ def init(names):
         if "val_acc" not in value:
             continue
         for e_n in names:
+            # if value[e_n.split(".")[0]][e_n.split(".")[1]]["score"] < 0.2:
+            #     continue
             if e_n not in metrics:
                 metrics[e_n] = []
             score = value[e_n.split(".")[0]][e_n.split(".")[1]]["score"]

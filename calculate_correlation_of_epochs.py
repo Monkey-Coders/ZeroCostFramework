@@ -33,6 +33,8 @@ if __name__ == '__main__':
             proxies = []
             val_accs = []
             for architecture in architectures:
+                # if len(architectures[architecture]["weights"]) != 10:
+                #     continue
                 if validate_architecture(architectures[architecture], epoch):
                     if proxy in architectures[architecture][epoch]:
                         proxies.append(architectures[architecture][epoch][proxy]["score"])
