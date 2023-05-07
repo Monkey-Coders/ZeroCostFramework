@@ -18,9 +18,9 @@ def validate_architecture(architecture, epoch):
 if __name__ == '__main__':
     zero_cost_proxies = get_proxies()
 
-    with open(f'{base_path}/generated_architectures_test.json') as f:
+    with open(f'{base_path}/generated_architectures.json') as f:
         architectures = json.load(f)
-
+                
     if not os.path.exists(f'{base_path}/correlations'):
         os.mkdir(f'{base_path}/correlations')
     try:
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         json.dump(correlations, f)
     line_styles = ['-', '--', '-.', ':']
     markers = ['o', 'v', '^', '<', '>', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X']
-    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray']
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'tab:pink', 'tab:orange', 'tab:blue', 'tab:green', 'tab:purple', 'teal', 'tab:brown', 'tab:gray']
 
     for i, proxy in enumerate(zero_cost_proxies):
         x = []
@@ -60,7 +60,7 @@ if __name__ == '__main__':
                 epoch_number = -1
             x.append(epoch_number)
             y.append(correlations[epoch][proxy])
-        plt.plot(x, y, label=proxy, linestyle=line_styles[i % len(line_styles)], marker=markers[i % len(markers)], color=colors[i])
+        plt.plot(x, y, label=proxy, linestyle=line_styles[i % len(line_styles)], color=colors[i]) #marker=markers[i % len(markers)], 
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.xlabel("Epoch")
     plt.ylabel("Spearman Correlation")
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     
     
     markers = ['o', 'v', '^', '<', '>', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X']
-    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray']
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'tab:blue', 'tab:orange', 'olive', 'magenta', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray']
 
     num_proxies = len(zero_cost_proxies)
 
