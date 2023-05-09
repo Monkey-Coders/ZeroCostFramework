@@ -38,6 +38,8 @@ class epe_nas(ZeroCostProxyInterface):
         net.zero_grad()
         x.requires_grad_(True)
         y = net(x)
+        if type(y) == tuple:
+            y = y[0]
         y.backward(torch.ones_like(y))
         jacob = x.grad.detach()
         return jacob, target.detach(), y.shape[-1]

@@ -17,7 +17,9 @@ class nwot(ZeroCostProxyInterface):
             K_inactive = torch.matmul(inactive_zone, inactive_zone.t())
             model.K += K_active.cpu().numpy() + K_inactive.cpu().numpy()
             
-        if len(data.size()) == 5:
+        if len(data.size()) == 6:
+            N, _I, _C, _T, _V, M = data.size()
+        elif len(data.size()) == 5:
             N, _C, _T, _V, M = data.size()
         else:
             N = len(labels)
@@ -33,7 +35,6 @@ class nwot(ZeroCostProxyInterface):
 
         x = torch.clone(data)
         model(x)                
-                  
         # Add epsilon to the diagonal for matrix stability
         epsilon = 1e-6
         diag = torch.eye(model.K.shape[0]) * epsilon

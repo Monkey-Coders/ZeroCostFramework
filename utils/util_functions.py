@@ -1,10 +1,11 @@
+import copy
 import os
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import numpy as np
 from datetime import date, datetime, timedelta
-
+import types
 
 
 def sum_arr(arr):
@@ -17,13 +18,22 @@ def get_score(net, metric, mode):
     metric_array = get_layer_metric_array(net, metric, mode)
     return sum_arr(metric_array)
 
+def no_op(self, x):
+    return x
+
 def initialise_zero_cost_proxy(net, data_loader, device, eval, train, single_batch, bn):
-    model = net.get_copy(bn=bn).to(device)
+    model = copy.deepcopy(net)
+    if bn == False:
+        for l in model.modules():
+            if isinstance(l, nn.BatchNorm2d) or isinstance(l, nn.BatchNorm1d):
+                l.forward = types.MethodType(no_op, l)
+    model.to(device)
     model.zero_grad()
     if train:
         model.train()
     if eval:
         model.eval()
+        
     
     if single_batch:
         process = iter(data_loader)
@@ -88,7 +98,9 @@ def get_proxies(exclude=[]):
         if f.endswith('.py'):
             return True
         return False
-    return [f.replace(".py", "") for f in os.listdir(f"{os.path.dirname(__file__)}/../zero_cost_proxies") if files_filter(f)]
+    proxies = [f.replace(".py", "") for f in os.listdir(f"{os.path.dirname(__file__)}/../zero_cost_proxies") if files_filter(f)]
+    proxies.sort()
+    return proxies
 
 def np_json_parse(obj):
     if isinstance(obj, np.bool_):

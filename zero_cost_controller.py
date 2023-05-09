@@ -1,6 +1,5 @@
 import os
 import numpy as np
-from tqdm import tqdm
 from ZeroCostFramework.utils.util_functions import get_proxies, calculate_function_runtime, np_json_parse
 import torch
 import gc
@@ -18,7 +17,7 @@ def calculate_zc_proxy_scores(net, data_loader, device, loss_function, overide =
 
     scores = {}
 
-    for proxy_name in tqdm(proxies):
+    for proxy_name in proxies:
         if len(overide):
             if proxy_name not in overide:
                 continue

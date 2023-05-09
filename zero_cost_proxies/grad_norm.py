@@ -15,6 +15,8 @@ class grad_norm(ZeroCostProxyInterface):
                     en = (sp + 1) * N // split_data
 
                     outputs = model.forward(data[st:en])
+                    if type(outputs) == tuple:
+                        outputs = outputs[0]
                     loss = loss_function(outputs, labels[st:en])
                     loss.backward()
 

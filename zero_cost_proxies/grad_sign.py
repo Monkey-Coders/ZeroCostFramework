@@ -22,6 +22,8 @@ def get_grad_conflict(net, inputs, targets, loss_function=F.cross_entropy):
     for i in range(N):
         net.zero_grad()
         outputs = net.forward(inputs[[i]])
+        if type(outputs) == tuple:
+            outputs = outputs[0]
         loss = loss_function(outputs, targets[[i]])
         loss.backward()
         flattened_grad = get_flattened_metric(net, lambda
