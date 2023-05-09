@@ -71,6 +71,8 @@ class fisher(ZeroCostProxyInterface):
 
                     model.zero_grad()
                     outputs = model.forward(data[st:en])
+                    if type(outputs) == tuple:
+                        outputs = outputs[0]
                     loss = loss_function(outputs, labels[st:en])
                     loss.backward()
 

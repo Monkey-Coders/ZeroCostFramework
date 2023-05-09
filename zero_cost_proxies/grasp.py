@@ -36,7 +36,10 @@ class grasp(ZeroCostProxyInterface):
                     grad_w = None
                     for _ in range(num_iters):
                         # TODO get new data, otherwise num_iters is useless!
-                        outputs = model.forward(data[st:en]) / T
+                        outputs = model.forward(data[st:en])
+                        if type(outputs) == tuple:
+                            outputs = outputs[0]
+                        outputs = outputs / T
                         loss = loss_function(outputs, labels[st:en])
                         grad_w_p = autograd.grad(loss, weights, allow_unused=True)
                         if grad_w is None:
@@ -49,7 +52,10 @@ class grasp(ZeroCostProxyInterface):
                     en = (sp + 1) * N // split_data
 
                     # forward/grad pass #2
-                    outputs = model.forward(data[st:en]) / T
+                    outputs = model.forward(data[st:en]) 
+                    if type(outputs) == tuple:
+                        outputs = outputs[0]
+                    outputs = outputs / T
                     loss = loss_function(outputs, labels[st:en])
                     grad_f = autograd.grad(loss, weights, create_graph=True, allow_unused=True)
 
