@@ -75,6 +75,7 @@ if __name__ == '__main__':
     num_proxies = len(zero_cost_proxies)
 
     for idx, proxy in enumerate(zero_cost_proxies):
+        plt.rcParams.update({'font.size': 22})
         fig, ax = plt.subplots(figsize=(10, 5), constrained_layout=True)
 
         x = []
@@ -89,12 +90,11 @@ if __name__ == '__main__':
 
         color = colors[idx % len(colors)]
         marker = markers[idx % len(markers)]
-
         ax.plot(x, y, label=proxy, marker=marker, color=color, markevery=[0])
         ax.legend(loc='upper right')
         ax.set_xlabel("Epoch")
         ax.set_ylabel("Spearman Correlation")
         ax.set_title(proxy)
-        plt.rcParams.update({'font.size': 22})  # Set font size to 14
+          # Set font size to 14
 
         plt.savefig(f'{base_path}/correlations/{proxy}_correlations.png') 
