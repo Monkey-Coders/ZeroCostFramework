@@ -13,7 +13,7 @@ epochs = ["zero_cost_scores"]
 #     epochs.append(f"zero_cost_scores_{i}")
 
 def init(names):
-    with open(f"{path}/generated_architectures_test.json") as file:
+    with open(f"{path}/generated_architectures.json") as file:
         results = json.load(file)
         
     metrics = {}
@@ -69,7 +69,7 @@ def calc(acc, metrics, comb):
     
 def get_all_combinations(names):
     list_combinations = []
-    for n in range(2, 4):
+    for n in range(5):
         list_combinations += list(combinations(names, n))
     return list_combinations
 

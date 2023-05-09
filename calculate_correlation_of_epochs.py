@@ -18,9 +18,9 @@ def validate_architecture(architecture, epoch):
 if __name__ == '__main__':
     zero_cost_proxies = get_proxies()
 
-    with open(f'{base_path}/generated_architectures_test.json') as f:
+    with open(f'{base_path}/generated_architectures.json') as f:
         architectures = json.load(f)
-
+                
     if not os.path.exists(f'{base_path}/correlations'):
         os.mkdir(f'{base_path}/correlations')
     try:
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         json.dump(correlations, f)
     line_styles = ['-', '--', '-.', ':']
     markers = ['o', 'v', '^', '<', '>', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X']
-    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray']
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'tab:pink', 'tab:orange', 'tab:blue', 'tab:green', 'tab:purple', 'teal', 'tab:brown', 'tab:gray']
 
     for i, proxy in enumerate(zero_cost_proxies):
         x = []
@@ -60,24 +60,22 @@ if __name__ == '__main__':
                 epoch_number = -1
             x.append(epoch_number)
             y.append(correlations[epoch][proxy])
-        plt.plot(x, y, label=proxy, linestyle=line_styles[i % len(line_styles)], marker=markers[i % len(markers)], color=colors[i])
+        plt.plot(x, y, label=proxy, linestyle=line_styles[i % len(line_styles)], color=colors[i]) #marker=markers[i % len(markers)], 
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.xlabel("Epoch")
     plt.ylabel("Spearman Correlation")
     plt.tight_layout()
     # Save
     plt.savefig(f'{base_path}/correlations/correlations.png')
-    num_proxies = len(zero_cost_proxies)
     
-    num_columns = 2
-    num_rows = math.ceil(num_proxies / num_columns)
+    
+    markers = ['o', 'v', '^', '<', '>', 's', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X']
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'tab:blue', 'tab:orange', 'olive', 'magenta', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray']
 
-    fig, axes = plt.subplots(num_rows, num_columns, figsize=(10, 5 * num_rows), constrained_layout=True)
+    num_proxies = len(zero_cost_proxies)
 
     for idx, proxy in enumerate(zero_cost_proxies):
-        row = idx // num_columns
-        col = idx % num_columns
-        ax = axes[row, col]
+        fig, ax = plt.subplots(figsize=(10, 5), constrained_layout=True)
 
         x = []
         y = []
@@ -89,14 +87,14 @@ if __name__ == '__main__':
             x.append(epoch_number)
             y.append(correlations[epoch][proxy])
 
-        ax.plot(x, y, "-D", label=proxy, markevery=[0])
+        color = colors[idx % len(colors)]
+        marker = markers[idx % len(markers)]
+
+        ax.plot(x, y, label=proxy, marker=marker, color=color, markevery=[0])
         ax.legend(loc='upper right')
         ax.set_xlabel("Epoch")
         ax.set_ylabel("Spearman Correlation")
         ax.set_title(proxy)
+        plt.rcParams.update({'font.size': 22})  # Set font size to 14
 
-    if num_proxies % num_columns != 0:
-        for i in range(num_proxies, num_rows * num_columns):
-            fig.delaxes(axes.flatten()[i])
-
-    plt.savefig(f'{base_path}/correlations/correlations_grid.png')  
+        plt.savefig(f'{base_path}/correlations/{proxy}_correlations.png') 
